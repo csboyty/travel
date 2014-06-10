@@ -1,0 +1,100 @@
+/*
+*图文混排文章编辑页面css
+*/
+a{
+    text-decoration: none;
+    color:#444;
+}
+a:focus,a:active{
+    outline: none;
+}
+.zy_post_label{
+    display: block;
+    font-size: 16px;
+    margin: 3px;
+}
+.zy_post_label_inline{
+    font-size: 16px;
+    line-height: 16px;
+    height: 20px;
+    display: inline-block;
+}
+.zy_post_select{
+    width: 90%;
+}
+.zy_post_select_inline{
+    width: 80%;
+}
+.zy_post_input{
+    width: 40%;
+}
+.zy_post_button{
+    background: url(../../images/app/zy_upload_btn_bg.png) no-repeat;
+    font-size: 14px;
+    height: 30px;
+    width: 60px;
+    border: none;
+    cursor: pointer;
+    vertical-align: middle;
+}
+.zy_post_div{
+    width: 90%;
+    margin:5px auto;
+    font-size: 14px;
+    line-height: 30px;
+    text-align: center;
+    font-style: italic;
+    color:#CECFCF;
+}
+.zy_post_img{
+    width: 80%;
+    display: block;
+    margin: auto;
+}
+.zy_background_percent{
+    display: block;
+    text-align: center;
+}
+.zy_post_section{
+    border: 1px solid #aaa;
+    margin-top:5px;
+}
+.zy_post_header{
+    background: #aaa;
+    height: 25px;
+}
+.zy_background{
+    width: 80%;
+    margin: 0px auto 10px auto;
+    display: block;
+}
+/*图片上的插入按钮*/
+.zy_insert_img{
+    background-color: #EEEEEE;
+    border:1px solid #999999;
+    border-radius: 3px 3px 3px 3px;
+    margin: 2px;
+    padding: 2px;
+}
+.zy_insert_img:hover{
+    opacity:.5;
+    cursor: pointer;
+}
+/*-----------------修改wordpress的固有样式=================*/
+/*隐藏保存草稿和预览按钮*/
+#save-post,#post-preview{
+    display: none;
+}
+/*==tinymce的弹出窗口fixed==*/
+.clearlooks2{
+    position: fixed!important;
+    top:0px!important;
+}
+#wp_editimgbtn:hover,#wp_delimgbtn:hover{
+    cursor: pointer
+}
+
+/*===隐藏最常用分类===*/
+a[href='#category-pop']{
+    display: none;
+}

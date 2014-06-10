@@ -1,0 +1,1437 @@
+/*
+
+*幻灯片文章编辑页面css
+
+*/
+
+@charset "utf-8";
+
+body{
+
+    font-family: "Microsoft YaHei" ;
+
+    min-width:1000px;
+
+}
+
+p{
+
+    padding: 0;
+
+    margin: 0;
+
+}
+
+article{
+
+    margin-top: 40px;
+
+}
+
+a{
+
+    text-decoration: none;
+
+    color: #000;
+
+}
+
+a:focus,a:active{
+
+    outline: none;
+
+}
+
+
+
+.zy_hidden{
+
+    display: none;
+
+}
+
+.zy_clear_float{
+
+	clear:both;
+
+	}
+
+/* -------------头部（标题部分）------------------- */
+
+.zy_header {
+
+    margin: 8px 0;
+
+	height:50px;
+
+	padding:2px 0;
+
+    border: none;
+
+	-webkit-box-sizing:border-box;
+
+	-moz-box-sizing:border-box;
+
+	-ms-box-sizing:border-box;
+
+	box-sizing:border-box;
+
+}
+
+.zy_upload_logo{
+
+    background:url(../../images/app/zy_header_title_bg.png) no-repeat -545px 0;
+
+    width: 45px;
+
+    height: 45px;
+
+    display: inline-block;
+
+    border: none;
+
+	float:left;
+
+}
+
+.zy_header h2{
+
+    margin: 0;
+
+    padding: 0;
+
+	line-height:45px;
+
+	font-weight:normal;
+
+	font-size:1.7em;
+
+    
+
+}
+
+.zy_form{
+
+}
+
+.zy_message_tip{
+
+    background: #FFFBCC
+
+}
+
+
+
+/* ------------------------------导航栏部分----------------------------------------- */
+
+#zy_nav{
+
+    height: 40px;
+
+    background-color: #f2f2f2;
+
+    border:1px solid #CECFCF;
+
+    color: #7C7C7C;
+
+}
+
+#zy_nav li{
+
+    float: left;
+
+    list-style: none;
+
+}
+
+.zy_nav1,.zy_nav2,.zy_nav3{
+
+    height: 40px;
+
+    text-decoration: none;
+
+    color: #7C7C7C;
+
+    line-height: 40px;
+
+    font-size:16px;
+
+    display: block;
+
+}
+
+.zy_nav1{
+
+    background: url(../../images/app/zy_nav1.png) no-repeat;
+
+    padding-left: 50px;
+
+    width: 120px;
+
+}
+
+.zy_nav2{
+
+    background: url(../../images/app/zy_nav2.png) no-repeat;
+
+    padding-left: 60px;
+
+    width: 110px;
+
+    margin-left: -20px;
+
+}
+
+.zy_nav3{
+
+    background: url(../../images/app/zy_nav3.png) no-repeat;
+
+    padding-left:60px;
+
+    width: 110px;
+
+    margin-left: -20px;
+
+}
+
+.zy_nav1:hover,.zy_nav1.zy_active{
+
+    background: url(../../images/app/zy_nav1_selet.png) no-repeat;
+
+    color: #ffffff;
+
+}
+
+.zy_nav2:hover,.zy_nav2.zy_active{
+
+    background: url(../../images/app/zy_nav2_selet.png) no-repeat;
+
+    color: #ffffff;
+
+}
+
+.zy_nav3:hover,.zy_nav3.zy_active{
+
+    background: url(../../images/app/zy_nav3_selet.png) no-repeat;
+
+    color: #ffffff;
+
+}
+
+/*右侧插入按钮*/
+
+.zy_btn_insert{
+
+    background: url(../../images/app/zy_insert_btn.png) no-repeat;
+
+    float: right;
+
+    width: 90px;
+
+    height: 30px;
+
+    line-height: 18px;
+
+    font-size: 14px;
+
+    cursor: pointer;
+
+    margin:5px 20px 5px ;
+
+    color: #ffffff;
+
+    border: none;
+
+}
+
+
+
+/* ------------------------左边三个section---------------------------------------------- */
+
+.zy_attribute{
+
+	margin-top:20px;
+
+	}
+
+
+
+#zy_left_bar{
+
+    float: left;
+
+    width: 55%
+
+}
+
+.zy_left_box{
+
+    margin-top: 15px;
+
+}
+
+/* 幻灯片主题*/
+
+.zy_item{
+
+    width:100%;
+
+    height: 40px;
+
+}
+
+/* 描述*/
+
+.zy_descr{
+
+    width: 100%;
+
+    height:120px;
+
+}
+
+/* 封面*/
+
+.zy_thumb_toolbar{
+
+    width:300px;
+
+    text-align: right;
+
+	position:relative;
+
+	height:60px;
+
+	padding:10px 0;
+
+	-moz-box-sizing:border-box;
+
+	-webkit-box-sizing:border-box;
+
+	-ms-box-sizing:border-box;
+
+	box-sizing:border-box;
+
+}
+
+.zy_thumb_toolbar>.zy_tool_tips{
+
+	width:70%;
+
+	text-align:left;
+
+	display:block;
+
+	color:#3399cc;
+
+	font-style:italic;
+
+	}
+
+#zy_thumb_container input,#cover_left p{
+
+    display: inline-block;
+
+}
+
+.zy_cover_pic{
+
+    display: block;
+
+    margin: 0 auto 10px 0px;
+
+    width: 300px;
+
+    height: 300px;
+
+}
+
+.zy_box_section{
+
+    border: 1px solid #CECFCF;
+
+}
+
+.zy_box_header{
+
+    font-size: 14px;
+
+    font-weight: bold;
+
+}
+
+/* ------------------------------------右边三个section---------------------------------------------- */
+
+#zy_right_bar{
+
+    margin-left: 5%;
+
+    display:inline-block;
+
+    width: 30%
+
+}
+
+/* 播放模版 */
+
+.zy_model1_pic,.zy_model2_pic{
+
+    width: 78px;
+
+    height: 58px;
+
+    display: inline-block;
+
+    vertical-align: -100%;
+
+}
+
+.zy_model1_pic{
+
+    background:url(../../images/app/zy_models.png) no-repeat -2px 0;
+
+}
+
+.zy_model2_pic{
+
+    background:url(../../images/app/zy_models.png) no-repeat -90px 0;
+
+}
+
+.zy_right_box{
+
+    border: 1px solid #e0e0dd;
+
+    margin-top:15px;
+
+}
+
+.zy_right_box li{
+
+    list-style: none;
+
+}
+
+.zy_view_li{
+
+    display: inline-block;
+
+    margin: 20px;
+
+}
+
+.zy_box_header{
+
+    background: url("../../images/app/zy_title_bg.png") repeat-x scroll 0 0 transparent;
+
+    border-bottom: 1px solid #CECFCF;
+
+    height: 30px;
+
+    width: 100%;
+
+    display: block;
+
+    line-height: 30px;
+
+	padding-left:1em;
+
+	-webkit-box-sizing:border-box;
+
+	-moz-box-sizing:border-box;
+
+	-ms-box-sizing:border-box;
+
+	box-sizing:border-box;
+
+}
+
+.zy_bg_toolbar{
+
+	height:60px;
+
+	padding:10px;
+
+	-webkit-box-sizing:border-box;
+
+	-moz-box-sizing:border-box;
+
+	-ms-box-sizing:border-box;
+
+	box-sizing:border-box;
+
+	position:relative;	
+
+	width:100%;
+
+	}
+
+.zy_bg_toolbar>.zy_tool_tips{
+
+	width:50%;
+
+	text-align:left;
+
+	display:block;
+
+	color:#3399cc;
+
+	font-style:italic;
+
+	}
+
+/*分类样式*/
+
+#zy_category_list li{
+
+    margin:5px;
+
+}
+
+.children{
+
+    margin-left: 20px;
+
+}
+
+.children .popular-category{
+
+    margin:0px;
+
+}
+
+.zy_background{
+
+    width: 90%;
+
+    margin: 20px auto;
+
+    display: block;
+
+}
+
+.zy_background_percent{
+
+    display: block;
+
+    text-align: center;
+
+}
+/*标签样式*/
+.zy_tag_delete{
+    cursor: pointer;
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    text-indent: -9999px;
+    background: url(../../images/app/xit.gif) no-repeat
+}
+.ui-autocomplete-input{
+    width: 80%;
+    margin: 20px 0px 5px 5%;
+}
+.zy_select_tags{
+    width: 90%;
+    margin: 0px 0px 5px 5%;
+    height: 50px;
+}
+.zy_add_tag_btn{
+    width: 10%;
+}
+
+/*------------------------------第二步媒体文件菜单-------------------------*/
+
+/*-----------------------------------左右两栏==============================*/
+
+.zy_uploader{
+
+	position:relative;
+
+	margin-top:20px;
+
+	}
+
+.zy_uploader_column_left,.zy_uploader_column_right{
+
+    border:1px solid #CECFCF;
+
+	overflow-y:hidden;	
+
+	height: 500px; 
+
+	-webkit-box-sizing:border-box; 
+
+	-moz-box-sizing:border-box; 
+
+	-ms-box-sizing:border-box; 
+
+	box-sizing:border-box; 
+
+	 
+
+}
+
+.zy_uploader_column_left{
+
+	width:206px;
+
+	float:left;  
+
+}
+
+.zy_uploader_column_right{
+
+	margin-left: 206px;
+
+    position: relative;	
+
+}
+
+.zy_section_left_header{
+
+    background:url(../../images/app/zy_add_media.png) no-repeat 0 0;
+
+    width: 100%;
+
+    height: 39px;
+
+    display: block;
+
+    cursor: pointer;
+
+}
+
+.zy_add_media_menu{
+
+    position: absolute;
+
+	top:39px;
+
+    width: 206px;
+
+    z-index: 3;
+
+	height:0;
+
+	overflow:hidden;
+
+    background: #fff;
+
+	box-shadow:0 0 4px rgba(0,0,0,0.4);
+
+	transition:height 0.5s ease-out;
+
+}
+
+.zy_add_media_menu ul{
+
+	margin:0;
+
+	}
+
+.zy_add_media_menu li{
+
+    list-style-type:none;
+
+    margin-bottom: 0px;
+
+}
+
+.zy_add_media_menu li>a{
+
+    display: inline-block;
+
+    width: 100%;
+
+    cursor: pointer;
+
+    height: 60px;
+
+    padding: 0 0 0 70px;
+
+    font-size:16px;
+
+    line-height: 60px;
+
+	-webkit-box-sizing:border-box;
+
+	-moz-box-sizing:border-box;
+
+	-ms-box-sizing:border-box;
+
+	box-sizing:border-box;
+
+	color:#666;
+
+}
+
+.zy_add_media_menu li>a:hover{
+
+	color:#666;
+
+	}
+
+.zy_types2,.zy_types3,.zy_types4,.zy_types5{
+
+    border-top: 1px solid #CECFCF;
+
+}
+
+.zy_types1{
+
+    background:url(../../images/app/zy_media_img.png) no-repeat 30px center;
+
+}
+
+.zy_types2{
+
+    background:url(../../images/app/zy_media_network_video.png) no-repeat 30px center;
+
+}
+
+.zy_types3{
+
+    background:url(../../images/app/zy_media_local_video.png) no-repeat 30px center;
+
+}
+
+.zy_types4{
+
+    background:url(../../images/app/zy_media_3d.png) no-repeat 30px center;
+
+}
+
+.zy_types5{
+
+    background:url(../../images/app/zy_media_ppt.png) no-repeat 30px center;
+
+}
+
+.zy_section_right_header{
+
+    height: 39px;
+
+    width: 100%;
+
+    background-color: #f2f2f2;
+
+    border-bottom:1px solid #CECFCF;
+
+}
+
+
+.zy_section_right_header p b{
+
+    margin: 10px 0 0 10px;
+
+    display: inline-block;
+
+    font-size:16px;
+
+}
+
+
+
+/* 设置滚动条的样式 */
+
+#zy_uploaded_medias_ol::-webkit-scrollbar {
+
+    width: 5px;
+
+}
+
+/* 滚动槽 */
+
+#zy_uploaded_medias_ol::-webkit-scrollbar-track {
+
+    background: #ccc;
+
+}
+
+/* 滚动条滑块 */
+
+#zy_uploaded_medias_ol::-webkit-scrollbar-thumb {
+
+    background: #999;
+
+}
+
+.zy_uploaded_medias_ol{
+
+    margin:0;
+
+    padding:0px;
+
+    width:206px;
+
+    list-style-position:inside;
+
+    list-style-type: decimal-leading-zero;
+
+	color:#336699;
+
+    position: absolute;
+
+    height: 460px;
+
+	-webkit-box-sizing:border-box;
+
+	-moz-box-sizing:border-box;
+
+	-ms-box-sizing:border-box;
+
+	box-sizing:border-box;
+
+	overflow-y:scroll;
+
+	overflow-x:hidden;
+
+}
+
+.zy_network_input{
+
+    width: 400px;
+
+    border: 2px solid #ddd;
+
+    height: 30px;
+
+    margin-right: 10px;
+
+}
+
+/*网络视频输入*/
+
+.zy_input_invalid{
+
+    border-color: red;
+
+}
+
+.zy_upload_btn{
+
+    background: url(../../images/app/zy_upload_btn_bg.png) no-repeat;
+
+    font-size: 14px;
+
+    height: 30px;
+
+    width: 60px;
+
+    border: none;
+
+    cursor: pointer;
+
+    vertical-align: middle;
+
+    color: #444;
+
+	float:right;
+
+}
+
+.zy_label{
+
+    font-weight: bold;
+
+    font-family:"Microsoft YaHei";
+
+    font-size: 14px;
+
+    vertical-align: top;
+
+    display: inline-block;
+
+    margin-bottom: 10px;
+
+}
+
+.zy_network_label{
+
+    font-family: "Microsoft YaHei";
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    vertical-align: top;
+
+    display: inline-block;
+
+    margin-top: 15px;
+
+}
+
+.zy_network_tip{
+
+    font-size: 14px;
+
+    display: inline-block;
+
+    margin-top: 15px;
+
+}
+
+
+
+#zy_uploaded_medias_ol li{
+
+    width: 100%;
+
+    white-space: nowrap;
+
+    height: 44px;
+
+    border: 1px solid #CECFCF;
+
+    margin: -1px 0 0 0;
+
+    padding: 0;
+
+	-webkit-box-sizing:border-box;
+
+	-moz-box-sizing:border-box;
+
+	-ms-box-sizing:border-box;
+
+	box-sizing:border-box;
+
+	position:relative;
+
+}
+
+
+
+#zy_uploaded_medias_ol li>a{
+
+	height:42px;
+
+	display:inline-block;
+
+	vertical-align: middle;
+
+	position:absolute;
+
+	top:0;
+
+	left:20px;
+
+	width: 180px;
+
+	
+
+	}
+
+.zy_uncomplete_li{
+
+    background-color: #ddd!important;
+
+}
+
+.zy_uncomplete_li>.zy_small_thumb{
+
+	position:absolute;
+
+	top:0;
+
+	left:20px;
+
+	}
+
+.zy_media_delete,.zy_uncomplete_delete{
+
+    display: inline-block;
+
+    width: 24px;
+
+    height: 42px;
+
+    background:url(../../images/app/zy_media_delete.png) center center no-repeat;
+
+    cursor: pointer;
+
+	position:absolute;
+
+	right:16px;
+
+	top:0;
+
+}
+
+   
+
+.zy_small_thumb{
+
+    width: 42px;
+
+    height: 42px;
+
+	position:absolute;
+
+	left:0;
+
+	top:0;
+
+}
+
+.zy_media_filename{
+
+    width: 90px;
+
+    display: inline-block;
+
+    overflow:hidden;
+
+    text-overflow: ellipsis;
+
+    line-height:42px;
+
+	padding:0 4px;
+
+    white-space:nowrap;
+
+    cursor: move;
+
+    font-size:12px;
+
+	position:absolute;
+
+	left:42px;
+
+	top:0;
+
+ }
+
+.zy_media_percent{
+
+    width: 104px;
+
+    display: inline-block;
+
+    font-size:12px;
+
+    line-height: 42px;
+
+	padding:0 4px;
+
+	position:absolute;
+
+	left:42px;
+
+	top:0;
+
+}
+
+
+
+#zy_uploaded_medias_ol span{
+
+    color: #999999;
+
+}
+
+
+.zy_media_list_active{
+
+	background-color: #F2F2F2;
+
+}
+.zy_media_list_error{
+
+    background-color:#FEEDE4;
+
+}
+
+
+#zy_uploaded_medias_ol li:hover,.zy_media_list_active{
+
+    border-bottom:#35a5e5 1px solid;
+
+    box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+
+    -webkit-box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+
+    -moz-box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+
+}
+
+
+
+.zy_file_types{
+
+    display: inline-block;
+
+    height: 42px;
+
+    padding-left: 50px;
+
+    line-height: 42px;
+
+}
+
+.zy_media_list{
+
+    width: 100%;
+
+    height: 100%;
+
+}
+
+.zy_iframe{
+
+    width: 100%;
+
+    height:460px;
+
+    border: none;
+
+}
+
+
+
+
+
+/*----------------------------------第三步预览------------------------------------------------------ */
+
+.zy_preview{
+
+    background: white;
+
+	margin-top:20px;
+
+}
+
+#zy_preview_content{
+
+    overflow-x: auto;
+
+}
+
+.zy_preview_section{
+
+    text-align:center;
+
+}
+
+.zy_preview_section p,.zy_preview_section h4{
+
+    text-align: left;
+
+}
+
+.zy_preview_img{
+
+    width: 500px;
+
+    height: 500px;
+
+    margin: 20px 0;
+
+}
+
+#TB_ajaxContent iframe{
+
+    display: block;
+
+    margin: auto;
+
+    width: 100%!important;
+
+    height: 100%!important;
+
+}
+
+#TB_ajaxContent video{
+
+    width: 100%;
+
+    height: 100%;
+
+}
+
+#TB_ajaxContent img{
+
+    display: block;
+
+    margin:auto;
+
+}
+
+.zy_preview_video{
+
+    width: 100%;
+
+    height: 100%;
+
+}
+
+#TB_window{
+
+    z-index: 9998!important;
+
+}
+
+
+
+/*====新疆预览====*/
+
+
+
+.zy_preview_article_xinjiang{
+
+    position:relative;
+
+    background:#fff;
+
+    margin-top: 0px;
+
+}
+
+.zy_preview_article_xinjiang p{
+
+    font-size: 18px;
+
+}
+
+
+
+.zy_preview_article_title_xinjiang{
+
+    color:#666;
+
+    width:250px;
+
+    font-size:40px;
+
+    margin-top:0;
+
+    line-height: 40px;
+
+}
+
+
+
+.zy_preview_author_xinjiang, .zy_preview_category_xinjiang{
+
+    color:#666;
+
+    width:250px;
+
+    line-height:10px;
+
+    font-size:16px;
+
+    font-weight:normal;
+
+}
+
+.zy_preview_author_xinjiang{
+
+    border-bottom:#666 1px solid;
+
+    padding-bottom:10px;
+
+    margin-bottom:10px;
+
+}
+
+.zy_preview_abstract_xinjiang{
+
+    margin-top:2em;
+
+    font-size:18px;
+
+    color:#666;
+
+    width:250px;
+
+    line-height:30px;
+
+}
+
+.zy_preview_abstract_xinjiang::first-letter{
+
+    display:inline-block;
+
+    font-size:32px;
+
+    color:#996633;
+
+}
+
+
+
+.zy_preview_allslides_xinjiang{
+
+    display:inline-block;
+
+    position:absolute;
+
+    left:338px;
+
+    top:0;
+
+    height:508px;
+
+    white-space: nowrap;
+
+}
+
+.zy_preview_allslides_xinjiang img{
+
+    max-height:100%;
+
+}
+
+.zy_preview_imgcaption_xinjiang{
+
+    background-color:#000;
+
+    width:100%;
+
+    bottom:0px;
+
+    opacity: 0.7;
+
+    position:absolute;
+
+    color:#fff;
+
+    font-size:16px;
+
+    padding:10px;
+
+    box-sizing: border-box;
+
+    text-indent: 14px;
+
+    white-space: normal;
+
+    word-wrap: break-word;
+
+    z-index: 1
+
+}
+
+.zy_preview_slide_xinjiang{
+
+    display: inline-block;
+
+    vertical-align: top;
+
+    height: 100%;
+
+    position: relative;
+
+}
+
+.zy_preview_slide_xinjiang a{
+
+    display: inline-block;
+
+    height: 100%;
+
+}
+
+.zy_preview_slide_xinjiang img{
+
+    height: 100%;
+
+}
+
+.zy_preview_videoslide,.zy_preview_webslide,.zy_preview_3dslide,.zy_preview_pptslide,.zy_no_media{
+
+    display: inline-block;
+
+    height:508px;
+
+    position:relative;
+
+    vertical-align: top;
+
+}
+
+.zy_preview_videoslide:before{
+
+    content: "";
+
+    width: 62px;
+
+    height: 62px;
+
+    background: url(../../images/app/binder_tag_localvideo.png) no-repeat;
+
+    position: absolute;
+
+    top: 50%;
+
+    left: 50%;
+
+    margin: -31px 0 0 -31px;
+
+}
+
+.zy_preview_webslide:after{
+
+    content: "";
+
+    width: 62px;
+
+    height: 62px;
+
+    background: url(../../images/app/binder_tag_webvideo.png) no-repeat;
+
+    position: absolute;
+
+    top: 50%;
+
+    left: 50%;
+
+    margin: -31px 0 0 -31px;
+
+}
+
+.zy_preview_3dslide:after{
+
+    content: "";
+
+    width: 62px;
+
+    height: 62px;
+
+    background: url(../../images/app/binder_tag_3d.png) no-repeat;
+
+    position: absolute;
+
+    top: 50%;
+
+    left: 50%;
+
+    margin: -31px 0 0 -31px;
+
+}
+
+.zy_preview_pptslide:after{
+
+    content: "";
+
+    width: 62px;
+
+    height: 62px;
+
+    background: url(../../images/app/binder_tag_ppt.png) no-repeat;
+
+    position: absolute;
+
+    top: 50%;
+
+    left: 50%;
+
+    margin: -31px 0 0 -31px;
+
+}
+
+
+
+
+

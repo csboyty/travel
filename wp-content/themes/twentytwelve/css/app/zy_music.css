@@ -1,0 +1,15 @@
+/*
+*上传音乐页面css
+*/
+.zy_upload_btn{
+    background: url(../../images/app/zy_upload_btn_bg.png) no-repeat;
+    font-size: 14px;
+    height: 30px;
+    width: 60px;
+    border: none;
+    cursor: pointer;
+    vertical-align: middle
+}
+#save-post,#post-preview{
+    display: none;
+}
