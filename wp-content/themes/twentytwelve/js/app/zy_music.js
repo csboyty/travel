@@ -12,7 +12,7 @@ jQuery(document).ready(function($){
         runtimes:"html5",
         multi_selection:false,
         max_file_size:zy_config.zy_mp3_upload_size,
-        browse_button:"zy_uploa_music_btn",
+        browse_button:"zy_upload_music_btn",
         container:"zy_upload_music",
         //flash_swf_url: '../wp-includes/js/plupload/plupload.flash.swf',
         url: ajaxurl,
@@ -63,6 +63,7 @@ jQuery(document).ready(function($){
     uploader_music.bind("FileUploaded",function(up,file,res){
         var response=JSON.parse(res.response);
         if(response.success){
+            $("#zy_music_list").html(file.name+"----上传成功");
             $("#zy_music_name").val(file.name);
         }else{
             alert(response.data.message);

@@ -576,6 +576,7 @@ function insert_own_table(){
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
     //判断是否存在表格，如果不存在创建表格
+    //echo $wpdb->get_var("show tables like '$table_name'");
     if($wpdb->get_var("show tables like '$table_name'")!=$table_name){
         $sql="CREATE TABLE  ".$table_name." (post_id bigint(20) PRIMARY KEY NOT NULL,
             pack_time tinytext,

@@ -58,7 +58,7 @@ class zy_music_class
      * */
     public function zy_add_music_html($post_id){
         echo "<div id='zy_upload_music'>";
-        echo "<input id='zy_uploa_music_btn' class='zy_upload_btn' type='button' value='上传'><span style='font-style: italic;color:#CECFCF'>只可上传mp3文件</span>";
+        echo "<input id='zy_upload_music_btn' class='zy_upload_btn' type='button' value='上传'><span style='font-style: italic;color:#CECFCF'>只可上传mp3文件</span>";
         $old_music=get_post($post_id);
         if($name=$old_music->post_content){
             echo "<input type='hidden' value='$name' name='post_old_content'>";
