@@ -455,107 +455,16 @@ add_action( 'customize_preview_init', 'twentytwelve_customize_preview_js' );
 
 
 /*============================================加载自定义资源=====================================================*/
-/*
- * 加载自定义的资源文件
- * */
-function zy_load_resource($hook){
-
-    //只有添加幻灯片、编辑文章页面、添加音乐页面才加在这几个js
-    $zy_template_url=get_template_directory_uri();
-    global $user_ID;//当前用户id
-
-    //新增、修改音乐
-    if(($_GET["post_type"]=="zy_music"&&$hook=="post-new.php")||($hook=="post.php"&&get_post($_GET["post"])->post_type=="zy_music")){
-
-        wp_enqueue_script("plupload");
-        wp_enqueue_script("plupload-html5");
-        //加载音乐js
-        wp_enqueue_script("zy_music_js",$zy_template_url.'/js/app/zy_music.js');
-        //引入自定义的css
-        wp_enqueue_style("zy_music_css",$zy_template_url.'/css/app/zy_music.css');
-        //刷出用户id，火狐上传的时候无法获取id
-        echo "<script type='text/javascript'>
-            var zy_config={
-                 zy_user_id:'$user_ID',
-                 zy_mp3_upload_size:'200mb'
-             };
-             Object.freeze(zy_config);
-        </script>";
-
-    }else if(($hook=="post-new.php"&&!isset($_GET["post_type"]))||($hook=="post.php"&&get_post($_GET["post"])->post_type=="post")){
-        //新增、修改图文混排
-        //添加一个自定义的js变量,把模版地址刷给页面，自定义的js可以直接使用
-        echo "<script type='text/javascript'>
-            var zy_uploaded_medias={},
-                zy_config={
-                        zy_template_url:'$zy_template_url',
-                        zy_user_id:'$user_ID',
-                        zy_img_upload_size:'2mb',
-                        zy_media_upload_size:'200mb',
-                        zy_compress_suffix:'_zy_compress'
-                    };
-            Object.freeze(zy_config);
-            </script>";
-
-        wp_enqueue_script("zy_common_js",$zy_template_url.'/js/app/zy_common.js');
-        //引入文章页面的js
-        wp_enqueue_script("zy_post_js",$zy_template_url.'/js/app/zy_post.js');
-        //引入自定义的css
-        wp_enqueue_style("zy_post_css",$zy_template_url.'/css/app/zy_post.css');
-
-    }else if($_GET["page"]=="zy_slide_menu"){
-        //幻灯片新增和修改
-        $name=get_user_by("id",$user_ID)->user_nicename;
-
-        wp_enqueue_script("jquery-ui-autocomplete");//标签自动匹配需要用到
-
-        echo "<script type='text/javascript'>
-        var zy_uploaded_medias={},
-            zy_config={
-                zy_template_url:'$zy_template_url',
-                zy_user_id:'$user_ID',
-                zy_current_author:'$name',
-                zy_img_upload_size:'2mb',
-                zy_media_upload_size:'200mb',
-                zy_compress_suffix:'_zy_compress'
-            };
-            Object.freeze(zy_config); //锁定对象
-        </script>";
-
-        wp_enqueue_script("zy_common_js",$zy_template_url.'/js/app/zy_common.js');
-        //上传插件
-        wp_enqueue_script("plupload");
-        wp_enqueue_script("plupload-html5");
-
-        //引入文章页面的js
-        wp_enqueue_script("zy_juicer_js",$zy_template_url.'/js/lib/juicer-min.js');
-        //引入文章页面的js
-        wp_enqueue_script("zy_slide_js",$zy_template_url.'/js/app/zy_slide.js');
-        //引入自定义的css
-        wp_enqueue_style("zy_slide_css",$zy_template_url.'/css/app/zy_slide.css');
-
-    }else if($hook=="edit.php"){
-        //禁用所有列表页的快速编辑、查看
-        echo "<style type='text/css'>
-            .row-actions .inline,.row-actions .view{display: none};
-        </style>";
-    }
-}
-//admin_head,admin_print_scripts一般都只是输出，函数中用echo
-add_action('admin_enqueue_scripts', 'zy_load_resource');
+include(get_template_directory()."/zy_pages/controller/class_zy_resource.php");
+$resource=new Zy_Resource();
 
 
 /*============================================添加自定义菜单=====================================================*/
 /*
  * 添加文章菜单栏下“幻灯片”菜单,添加设置菜单栏“打包数据”菜单
  * */
-//为菜单添加展示页面的函数
-function zy_slide_menu_page(){
-
-    $url=get_template_directory();
-
-    include($url."/zy_pages/zy_slide.php");
-}
+include(get_template_directory()."/zy_pages/controller/class_zy_menu.php");
+add_action("admin_menu",array("Zy_Menu","add_all_menu"));
 
 /*
  * 自定义数据表,如果作为插件的话只在插件启用的时候创建表格,
@@ -563,142 +472,16 @@ function zy_slide_menu_page(){
  * 写在这里每次都会执行，效率不高，最好写到插件中
  * 主要是保存打包的id
  * */
+include(get_template_directory()."/zy_pages/controller/class_zy_db.php");
+$db=new Zy_Db();
 
-function insert_own_table(){
-    global $wpdb,$jal_db_version;
-
-    $jal_db_version="1.0";
-
-    $table_name=$wpdb->prefix."pack_ids";
-    $table_pack_name=$wpdb->prefix."logs";
-    $view_posts=$wpdb->prefix."posts_view";
-
-    require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-
-    //判断是否存在表格，如果不存在创建表格
-    //echo $wpdb->get_var("show tables like '$table_name'");
-    if($wpdb->get_var("show tables like '$table_name'")!=$table_name){
-        $sql="CREATE TABLE  ".$table_name." (post_id bigint(20) PRIMARY KEY NOT NULL,
-            pack_time tinytext,
-            pack_lock int DEFAULT 0 NOT NULL
-        ) DEFAULT CHARSET=utf8;";
-
-
-        dbDelta( $sql );
-
-        add_option( "jal_db_version", $jal_db_version );
-        //echo "The own table is created";
-    }
-    //建立打包程序需要的表
-    if($wpdb->get_var("show tables like '$table_pack_name'")!=$table_pack_name){
-        $sql="CREATE TABLE ".$table_pack_name." (
-          `id` bigint(20) NOT NULL AUTO_INCREMENT,
-          `type` varchar(32) NOT NULL,
-          `level` char(10) NOT NULL,
-          `message` varchar(2048) NOT NULL,
-          `log_time` datetime NOT NULL,
-          PRIMARY KEY (`id`)
-        ) DEFAULT CHARSET=utf8;";
-
-        //require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-        dbDelta( $sql );
-
-        add_option( "jal_db_version", $jal_db_version );
-        //echo "The own table is created";
-    }
-
-    //创建获取文章的试图
-    if($wpdb->get_var("show tables like '$view_posts'")!=$view_posts){
-
-        //在ajax_class中使用到
-        $sql="create view $view_posts as SELECT p.ID AS post_id,p.post_title,p.post_excerpt,p.post_date,
-            p.post_mime_type,m.meta_value AS thumb,u.display_name,c.term_id FROM $wpdb->posts AS p,
-            $wpdb->users AS u,$wpdb->term_relationships AS s,$wpdb->postmeta AS m,$wpdb->term_taxonomy AS t,
-            $wpdb->terms AS c WHERE  t.term_id=c.term_id AND s.term_taxonomy_id=t.term_taxonomy_id AND s.object_id=p.ID
-            AND p.post_author=u.ID AND p.post_status='publish' AND m.post_id=p.ID AND m.meta_key='zy_thumb' ORDER BY p.post_date DESC;";
-
-        $wpdb->query( $sql );
-    }
-
-}
-//hook
-add_action("admin_init","insert_own_table");
-/*
- * 打包菜单处理函数
- * */
-function zy_pack_menu_page(){
-
-    global $wpdb;
-
-    echo "<br><br><br>正在打包中......<br><br><br>";
-
-    $tablename=$wpdb->prefix."pack_ids";
-    $zy_packing_ids=$wpdb->get_col("SELECT post_id FROM $tablename AS i,$wpdb->posts AS p
-        WHERE i.pack_lock=0 AND p.ID=i.post_id AND p.post_status!='trash'");//需要发送的数组文章id
-
-    if(count($zy_packing_ids)){
-
-        $url=get_site_url()."/bundle-app/makeBundle";
-        $zy_http_result=false;
-        $zy_pack_time="";
-        $ids=implode(",",$zy_packing_ids);//组成字符串
-        //$ids="219";
-
-        //更改数据库后，发送到打包程序
-        for($i=0;$i<3;$i++){
-            if(zy_common_class::zy_http_send($ids,$url)){
-                $zy_http_result=true;
-
-                $zy_pack_time=time();//记录时间，从1970到现在的秒数
-
-                break;//跳出循环
-            }
-        }
-
-        //设置显示值和是否锁定id
-        if($zy_http_result){
-
-            //将时间写入到数据库中
-            $wpdb->query("UPDATE $tablename SET pack_time=$zy_pack_time WHERE post_id IN ($ids)");
-
-
-
-            //显示成功信息
-            echo "文章".$ids."打包数据成功，请选择其他操作。";
-
-        }else{
-             //显示错误信息
-            echo "打包数据出错，本次打包未成功！请稍后再打包。";
-        }
-
-    }else{
-        echo "没有新数据可以打包，请选择其他操作!";
-    }
-
-}
-//添加菜单
-function zy_add_menu(){
-    //添加文章子菜单“幻灯片”
-    add_posts_page("幻灯片","幻灯片",'publish_posts','zy_slide_menu',"zy_slide_menu_page");
-    //添加设置子菜单“打包数据”
-    add_options_page("打包数据","打包数据","manage_options","zy_pack_menu","zy_pack_menu_page");
-}
-add_action("admin_menu","zy_add_menu");
 
 /*----------------------------------------------添加音乐文章类型--------------------------------------------*/
 //引入类,此类中还引入了zy_common_class类,此类会在init的时候初始化，所以所有的页面其实都引入了这个类和common类
-include(get_template_directory()."/zy_pages/zy_music_class.php");
+include(get_template_directory()."/zy_pages/controller/class_zy_music.php");
+$zy_music=new Zy_Music();
 
-/*
- * 初始化
- * */
-//add_action("init",array($zy_music,"zy_music_init"));
-add_action("init",array("zy_music_class","zy_music_init"));
-/*
- * 消息函数
- * */
-//add_filter( 'post_updated_messages', array($zy_music,"zy_music_updated_messages"));
-add_filter( 'post_updated_messages', array("zy_music_class","zy_music_updated_messages"));
+
 /*
  * 删除时的处理函数
  * */
@@ -712,7 +495,7 @@ function zy_music_delete($post_id){
 /*
  * 保存文件
  * */
-add_action("publish_zy_music",array("zy_music_class","zy_music_save"));
+//add_action("publish_zy_music",array("zy_music_class","zy_music_save"));
 
 
 /*===============================================================图文混排页面代码===============================*/
@@ -722,11 +505,11 @@ add_action("publish_zy_music",array("zy_music_class","zy_music_save"));
  *添加字段到图文混排页面右边
  * */
 function zy_add_box(){
-    include(get_template_directory()."/zy_pages/zy_post_box_class.php");
+    include(get_template_directory()."/zy_pages/view/class_zy_box.php");
 
     //add_meta_box("zy_thumb_id","缩略图",array($zy_post_box,'zy_post_thumb_box'),'post','side');
-    add_meta_box("zy_thumb_id","缩略图",array("zy_post_box_class",'zy_post_thumb_box'),'post','side');
-    add_meta_box("zy_background_id","背景",array("zy_post_box_class",'zy_post_background_box'),'post','side');
+    add_meta_box("zy_thumb_id","缩略图",array("Zy_box",'zy_post_thumb_box'),'post','side');
+    add_meta_box("zy_background_id","背景",array("Zy_box",'zy_post_background_box'),'post','side');
 }
 add_action("add_meta_boxes",'zy_add_box');
 
@@ -868,11 +651,11 @@ add_action('publish_post', 'zy_data_save');
 
 /*===========================================处理ajax部分====================================*/
 //引入类
-include(get_template_directory()."/zy_pages/zy_ajax_class.php");
+include(get_template_directory()."/zy_pages/controller/class_zy_ajax.php");
 /*
  * 处理文件上传的ajax函数
  * */
-add_action('wp_ajax_uploadfile', array("zy_ajax_class",'zy_action_uploadfile'));
+add_action('wp_ajax_uploadfile', array("Zy_Ajax",'zy_action_uploadfile'));
 //火狐里面这个地方不会带登陆标志过来，需要加下面这句或者前台上传插件使用html5引擎
 //add_action('wp_ajax_nopriv_uploadfile', array("zy_ajax_class",'zy_action_uploadfile'));
 

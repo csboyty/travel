@@ -16,13 +16,13 @@
 
 //在functions.php中已经将类包含进来了
 
-include("zy_slide_save_class.php");
+include("../controller/class_zy_slide_saver.php");
 
-include("zy_articles_help_class.php");
+include("../controller/class_zy_page_helper.php");
 
-$zy_save_slide=new zy_slide_save_class();
+$zy_save_slide=new Zy_Slide_Saver();
 
-$zy_articles_help=new zy_articles_help_class();
+$zy_articles_help=new Zy_Page_Helper();
 
 $post_id="";
 

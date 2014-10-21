@@ -2,19 +2,19 @@
 /**
  * Created by JetBrains PhpStorm.
  * User: ty
- * Date: 13-6-20
- * Time: 上午10:54
- * 此类包含一些常用的函数,都是使用静态方法
+ * Date: 14-10-5
+ * Time: 上午11:59
+ * To change this template use File | Settings | File Templates.
  */
-class zy_common_class{
 
+class Zy_Util {
     /**
      * 定义删除目录函数,
      * @static
      * @param string $dir 需要删除的目录
      * @return bool true|false 删除是否成功
      */
-    public static function zy_deldir($dir){
+    public static function deldir($dir){
         //先删除目录下的文件：
         $dh=opendir($dir);
         while ($file=readdir($dh)) {
@@ -27,7 +27,7 @@ class zy_common_class{
                 } else {
 
                     //嵌套调用
-                    if(!self::zy_deldir($fullpath)){
+                    if(!self::deldir($fullpath)){
                         return false;
                     }
                 }
@@ -50,7 +50,7 @@ class zy_common_class{
      * @param array $array 需要转化的数组
      * @return string 转化后的json字符串
      */
-    public static function zy_array_to_string($array){
+    public static function array_to_string($array){
 
         //$array是一维的键值数组
         $string=array();
@@ -68,7 +68,7 @@ class zy_common_class{
      * @param string $url 发送到的地址
      * @return bool true|false 发送是否成功
      */
-    public static function zy_http_send($ids,$url){
+    public static function http_send($ids,$url){
         $response = wp_remote_post( $url, array(
                 'method' => 'POST',
                 'timeout' => 30,

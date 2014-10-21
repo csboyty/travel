@@ -6,16 +6,21 @@
  * Time: 下午12:15
  * 音乐类，主要包括添加菜单函数、保存、删除、菜单页面等
  */
-include("zy_common_class.php");
+include("class_zy_util.php");
 /**
  *
  */
-class zy_music_class
+class Zy_Music
 {
+    public function __construct() {
+        add_action("init",array($this,"music_init"));
+        add_action("publish_zy_music",array($this,"music_save"));
+        add_filter( 'post_updated_messages', array($this,"music_updated_messages"));
+    }
     /**
      * 初始化自定义类型
      * */
-    public function zy_music_init() {
+    public function music_init() {
         $labels = array(
             'name' => '音乐',
             'singular_name' => '音乐',
@@ -46,7 +51,7 @@ class zy_music_class
             'menu_position' => null,
             'taxonomies'=>array("category"),
             'supports' => array( 'title',"author"),
-            'register_meta_box_cb'=>array("zy_music_class",'zy_add_music_upload')
+            'register_meta_box_cb'=>array("Zy_Music",'add_music_upload')
         );
 
         register_post_type( 'zy_music', $args );
@@ -56,7 +61,7 @@ class zy_music_class
      * 自定义的字段的box展示代码,将音乐文件名保存在post_content字段中
      * @param int $post_id 音乐id
      * */
-    public function zy_add_music_html($post_id){
+    public function add_music_html($post_id){
         echo "<div id='zy_upload_music'>";
         echo "<input id='zy_upload_music_btn' class='zy_upload_btn' type='button' value='上传'><span style='font-style: italic;color:#CECFCF'>只可上传mp3文件</span>";
         $old_music=get_post($post_id);
@@ -73,8 +78,8 @@ class zy_music_class
     /**
      * 添加自定义的box
      * */
-    public function zy_add_music_upload(){
-        add_meta_box( "zy_music_upload", "上传音乐",array("zy_music_class","zy_add_music_html"), "zy_music", "normal");
+    public function add_music_upload(){
+        add_meta_box( "zy_music_upload", "上传音乐",array("Zy_Music","add_music_html"), "zy_music", "normal");
     }
 
     /**
@@ -82,7 +87,7 @@ class zy_music_class
      * @param array $messages 消息数组
      * @return array $messages 消息数组
      * */
-    public function zy_music_updated_messages( $messages ) {
+    public function music_updated_messages( $messages ) {
         global $post, $post_ID;
 
         $messages['zy_music'] = array(
@@ -110,13 +115,12 @@ class zy_music_class
      * @param  int $post_id 音乐id
      * @return bool true|false 删除是否成功
      */
-    public function zy_music_delete($post_id){
+    public function music_delete($post_id){
         $targetDir=wp_upload_dir();
-        if(!zy_common_class::zy_deldir($targetDir["basedir"]."/".$post_id)){
+        if(!Zy_Util::deldir($targetDir["basedir"]."/".$post_id)){
             header("content-type:text/html; charset=utf-8");
             die("删除音乐文件失败，请将音乐id".$post_id."告诉开发人员！");
         }
-
 
         return true;
     }
@@ -126,7 +130,7 @@ class zy_music_class
      * @param int $post_id 音乐id
      * @return bool true|false 保存是否成功
      */
-    public function zy_music_save($post_id){
+    public function music_save($post_id){
         $filename=$_POST["post_content"];//获取文件名
         $dir=wp_upload_dir();
         global $user_ID;

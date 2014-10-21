@@ -2,13 +2,12 @@
 /**
  * Created by JetBrains PhpStorm.
  * User: ty
- * Date: 13-6-26
- * Time: 下午12:03
- * 一些ajax处理函数
+ * Date: 14-10-5
+ * Time: 下午12:16
+ * To change this template use File | Settings | File Templates.
  */
-include ("zy_image_class.php");
-class zy_ajax_class{
-
+include ("class_zy_image.php");
+class Zy_Ajax {
     const ZY_COMPRESS_SUFFIX="_zy_compress"; //常量，代表压缩文件的后缀
     const ZY_TOP_POST_COUNT=4;
     const ZY_TOP_TERM_ID=11; //本地为8
@@ -203,7 +202,7 @@ class zy_ajax_class{
             'category'=>"$program_id",
             'post_type'=>"zy_music"
         ));
-	    $dir=wp_upload_dir();
+        $dir=wp_upload_dir();
         $result_obj=array();
 
         //组装数据

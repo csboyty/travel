@@ -2,13 +2,12 @@
 /**
  * Created by JetBrains PhpStorm.
  * User: ty
- * Date: 13-6-20
- * Time: 上午9:54
- * 主要是获取一些数据，比如说修改的时候要刷出来的数据
+ * Date: 14-10-6
+ * Time: 上午8:51
+ * To change this template use File | Settings | File Templates.
  */
-class zy_articles_help_class
-{
 
+class Zy_Page_Helper {
     const ZY_COMPRESS_SUFFIX="_zy_compress"; //常量，代表压缩文件的后缀
 
     /**
@@ -17,7 +16,7 @@ class zy_articles_help_class
      */
     public function zy_get_slide_medias($slide_id){
         if($slide_id){
-          
+
             /*
              * 需要通过获取内容中的media_id，搜索出所有的绑定了媒体文件，
              * 这个顺序才是页面上已上传列表的顺序

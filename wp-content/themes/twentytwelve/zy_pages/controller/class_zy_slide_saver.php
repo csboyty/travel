@@ -2,13 +2,12 @@
 /**
  * Created by JetBrains PhpStorm.
  * User: ty
- * Date: 13-6-20
- * Time: 上午9:53
- * 幻灯片数据保存类
+ * Date: 14-10-6
+ * Time: 上午8:59
+ * To change this template use File | Settings | File Templates.
  */
-include("zy_articles_save_class.php");
-class zy_slide_save_class extends zy_articles_save_class
-{
+
+class Zy_Slide_Saver extends Zy_Post_Saver {
     /**
      * 新建幻灯片保存
      * @return int|WP_Error 返回幻灯片id或者错误
@@ -74,11 +73,11 @@ class zy_slide_save_class extends zy_articles_save_class
         wp_set_post_lock( $post_id );
 
         //删除临时存储文件夹
-       /* $target_dir=wp_upload_dir();
-        $target_dir=$target_dir["basedir"]."/tmp/".$user_ID;
-        if(is_dir($target_dir)){
-            zy_common_class::zy_deldir($target_dir);
-        }*/
+        /* $target_dir=wp_upload_dir();
+         $target_dir=$target_dir["basedir"]."/tmp/".$user_ID;
+         if(is_dir($target_dir)){
+             zy_common_class::zy_deldir($target_dir);
+         }*/
 
         return $post_id;
     }

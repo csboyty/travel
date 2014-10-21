@@ -2,15 +2,12 @@
 /**
  * Created by JetBrains PhpStorm.
  * User: ty
- * Date: 13-6-20
- * Time: 上午9:53
- * 保存文章和幻灯片数据的基类
+ * Date: 14-10-6
+ * Time: 上午8:53
+ * To change this template use File | Settings | File Templates.
  */
-//functions.php中引入zy_music_class的时候引入了因为是在init的时候加入的,后期优化
-//include("zy_common_class.php");
 
-class zy_articles_save_class
-{
+class Zy_Post_Saver {
     private $dir,$target_dir,$from_dir;
 
     const ZY_COMPRESS_SUFFIX="_zy_compress"; //常量，代表压缩文件的后缀
@@ -21,14 +18,14 @@ class zy_articles_save_class
      * @param string $target_dir 最终保存文件的路径
      * @param array $value 媒体文件数据的数组
      * {
-            zy_media_type:
-            zy_media_filename:
-            zy_media_filepath:
-            zy_media_thumb_filename:
-            zy_media_thumb_filepath:
-            zy_media_title:
-            zy_media_memo
-        }
+    zy_media_type:
+    zy_media_filename:
+    zy_media_filepath:
+    zy_media_thumb_filename:
+    zy_media_thumb_filepath:
+    zy_media_title:
+    zy_media_memo
+    }
      * @return bool true|false 保存是否成功
      */
     public function zy_move_media_files($from_dir,$target_dir,$value){
