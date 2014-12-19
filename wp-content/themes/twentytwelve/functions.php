@@ -460,448 +460,45 @@ $resource=new Zy_Resource();
 
 
 /*============================================添加自定义菜单=====================================================*/
-/*
- * 添加文章菜单栏下“幻灯片”菜单,添加设置菜单栏“打包数据”菜单
- * */
 include(get_template_directory()."/zy_pages/controller/class_zy_menu.php");
 add_action("admin_menu",array("Zy_Menu","add_all_menu"));
 
-/*
- * 自定义数据表,如果作为插件的话只在插件启用的时候创建表格,
- * register_activation_hook( __FILE__,'insert_own_table');
- * 写在这里每次都会执行，效率不高，最好写到插件中
- * 主要是保存打包的id
- * */
 include(get_template_directory()."/zy_pages/controller/class_zy_db.php");
 $db=new Zy_Db();
 
 
 /*----------------------------------------------添加音乐文章类型--------------------------------------------*/
-//引入类,此类中还引入了zy_common_class类,此类会在init的时候初始化，所以所有的页面其实都引入了这个类和common类
 include(get_template_directory()."/zy_pages/controller/class_zy_music.php");
 $zy_music=new Zy_Music();
 
 
-/*
- * 删除时的处理函数
- * */
-function zy_music_delete($post_id){
-    $zy_music=new zy_music_class();
-    if(!$zy_music->zy_music_delete($post_id)){
-        return false;
-    }
-    return true;
-}
-/*
- * 保存文件
- * */
-//add_action("publish_zy_music",array("zy_music_class","zy_music_save"));
-
-
-/*===============================================================图文混排页面代码===============================*/
-//添加文章展现形式
-/*---------------------------------------------------添加右边栏输入项部分-------------------------------------------*/
-/*
- *添加字段到图文混排页面右边
- * */
-function zy_add_box(){
-    include(get_template_directory()."/zy_pages/view/class_zy_box.php");
-
-    //add_meta_box("zy_thumb_id","缩略图",array($zy_post_box,'zy_post_thumb_box'),'post','side');
-    add_meta_box("zy_thumb_id","缩略图",array("Zy_box",'zy_post_thumb_box'),'post','side');
-    add_meta_box("zy_background_id","背景",array("Zy_box",'zy_post_background_box'),'post','side');
-}
-add_action("add_meta_boxes",'zy_add_box');
 
 /*--------------------------------------------------------图文混排保存数据部分---------------------------------*/
-global $zy_post_save;
-/*
- * 保存媒体文件
- * */
-function zy_save_medias($post_id){
-    global $zy_post_save;
-    //引入类，必须在这一类函数的第一个执行的函数中引入，不然后面的类无法使用对象
-    include(get_template_directory()."/zy_pages/zy_articles_save_class.php");
-    $zy_post_save=new zy_articles_save_class();
+include(get_template_directory()."/zy_pages/controller/class_zy_post_saver.php");
+$saver=new Zy_Post_Saver();
 
-    $new_medias=$_POST["zy_medias"];
-
-    if(isset($_POST["zy_old_medias"])){
-        //判断是否为修改
-       if(!$zy_post_save->zy_edit_save_medias($post_id,$new_medias)){
-           return false;
-       }
-    }else{
-        //判断为新增
-       if(!$zy_post_save->zy_new_save_medias($post_id,$new_medias)){
-           return false;
-       }
-    }
-    //返回值
-    return true;
-};
-/*
- * 存储缩略图数据函数
- * */
-function zy_save_thumb($post_id){
-    global $zy_post_save;
-    $filename=$_POST["zy_thumb"];
-
-    //分为新建和修改两种类型
-    if(isset($_POST["zy_old_thumb"])){
-        $old_filename=$_POST["zy_old_thumb"];
-        //如果是修改了文件
-        if(!$zy_post_save->zy_edit_save_thumb($post_id,$filename,$old_filename)){
-            return false;
-        }
-    }else{
-        if(!$zy_post_save->zy_new_save_thumb($post_id,$filename)){
-            return false;
-        }
-    }
-
-    //返回值,让
-    return true;
-}
-/*
- * 存储背景图数据函数
- * */
-function zy_save_background($post_id){
-    global $zy_post_save;
-    $filename=$_POST["zy_background"];
-
-    //分为新建和修改两种类型
-    if(isset($_POST["zy_old_background"])){
-        $old_filename=$_POST["zy_old_background"];
-        //如果是修改了文件
-        if(!$zy_post_save->zy_edit_save_background($post_id,$filename,$old_filename)){
-            return false;
-        }
-    }else{
-        if(!$zy_post_save->zy_new_save_background($post_id,$filename)){
-            return false;
-        }
-    }
-
-    //返回值,让
-    return true;
-}
-
-/*
- * 保存自定义数据,所有的数据在一个函数保存
- * */
-function zy_data_save( $post_id ) {
-    global $wpdb;
-    $post=get_post($post_id);
-
-    /*
-     * 需要判断是图文混排还是幻灯片，因为幻灯片的wp_insert_post也会出发publish_post
-     * */
-    if(strpos($post->post_mime_type,"zyslide")===false&&isset($_POST["zy_thumb"])){
-
-        //设置页面编码
-        header("content-type:text/html;charset=utf-8");
-
-        /*存储媒体文件数据*/
-        if(!zy_save_medias($post_id)){
-            //提示错误
-            die("保存媒体数据出错，请联系开发人员");
-        }
-
-        /*存储缩略图数据*/
-        if(!zy_save_thumb($post_id)){
-            //提示错误
-            die("保存缩略图数据出错，请联系开发人员");
-        }
-        /*存储背景数据*/
-        if(!zy_save_background($post_id)){
-            //提示错误
-            die("保存背景数据出错，请联系开发人员");
-        }
-
-        //删除临时存储文件夹
-        /*global $user_ID;
-        $target_dir=wp_upload_dir();
-        $target_dir=$target_dir["basedir"]."/tmp/".$user_ID;
-        if(is_dir($target_dir)){
-            zy_common_class::zy_deldir($target_dir);
-        }*/
-
-        //保存打包数据
-        $tablename=$wpdb->prefix."pack_ids";
-        if(count($wpdb->get_col("SELECT post_id FROM $tablename WHERE post_id=$post_id"))){
-            //存在的情况下，修改
-            if($wpdb->update($wpdb->prefix."pack_ids",array("pack_lock"=>0,"pack_time"=>NULL),array("post_id"=>$post_id),array("%d","%s"))===false){
-                die("保存打包数据出错，请联系开发人员");
-            }
-        }else{
-            //不存在的情况下新增
-            if(!$wpdb->insert($wpdb->prefix."pack_ids",array("post_id"=>$post_id),array("%d"))){
-                die("保存打包数据出错，请联系开发人员");
-            }
-        }
-
-        //更新发布时间
-        $post_date=current_time('mysql');
-        $wpdb->update($wpdb->posts, array("post_date"=>$post_date,"post_date_gmt"=>date("Y-m-d H:i:s")), array("ID"=>$post_id));
-    }
-}
-add_action('publish_post', 'zy_data_save');
-//add_action('pre_post_update','zy_data_save');
 
 /*===========================================处理ajax部分====================================*/
 //引入类
 include(get_template_directory()."/zy_pages/controller/class_zy_ajax.php");
-/*
- * 处理文件上传的ajax函数
- * */
-add_action('wp_ajax_uploadfile', array("Zy_Ajax",'zy_action_uploadfile'));
-//火狐里面这个地方不会带登陆标志过来，需要加下面这句或者前台上传插件使用html5引擎
-//add_action('wp_ajax_nopriv_uploadfile', array("zy_ajax_class",'zy_action_uploadfile'));
+$ajax=new Zy_Ajax();
 
-/*
- * 打包程序接口,ajax请求，告知wordpress打包是否成功
- * */
-//无需登陆，即可使用
-add_action("wp_ajax_nopriv_zy_pack_unlock",array("zy_ajax_class","zy_pack_unlock_callback"));
-add_action("wp_ajax_zy_pack_unlock",array("zy_ajax_class","zy_pack_unlock_callback"));
-
-/*
- * 获取音乐
- * */
-//无需登陆，即可使用
-add_action("wp_ajax_zy_get_music",array("zy_ajax_class","zy_get_music"));
-add_action("wp_ajax_nopriv_zy_get_music",array("zy_ajax_class","zy_get_music"));
-
-/*
- * 获取分类型文章
- * */
-add_action("wp_ajax_zy_get_posts",array("zy_ajax_class","zy_get_posts"));
-add_action("wp_ajax_nopriv_zy_get_posts",array("zy_ajax_class","zy_get_posts"));
-
-
-/*
- * 获取首页置顶文章
- * */
-add_action("wp_ajax_zy_get_top_posts",array("zy_ajax_class","zy_get_top_posts"));
-add_action("wp_ajax_nopriv_zy_get_top_posts",array("zy_ajax_class","zy_get_top_posts"));
-
-/*
- * 获取项目中的分类
- * */
-add_action("wp_ajax_zy_get_categories",array("zy_ajax_class","zy_get_categories"));
-add_action("wp_ajax_nopriv_zy_get_categories",array("zy_ajax_class","zy_get_categories"));
-
-/*
- * 获取文章详情
- * */
-add_action("wp_ajax_zy_get_post_detail",array("zy_ajax_class","zy_get_post_detail"));
-add_action("wp_ajax_nopriv_zy_get_post_detail",array("zy_ajax_class","zy_get_post_detail"));
 
 /*------------------------------------------自定义tinymce插件部分-------------------------------------------*/
-/*
- * 添加自定义的tinymce插件
- * */
-//添加tinyMCE插件函数
-function zy_tinymce_plugins () {
-
-    $plugins = array('zy_insert_media'); //Add any more plugins you want to load here
-
-    $plugins_array = array();
-
-    //Build the response - the key is the plugin name, value is the URL to the plugin JS
-    foreach ($plugins as $plugin ) {
-        $plugins_array[ $plugin ] = get_template_directory_uri() . '/tinymce/' . $plugin . '/editor_plugin.js';
-    }
-
-    return $plugins_array;
-}
-add_filter('mce_external_plugins', 'zy_tinymce_plugins');
-
-
-/*
- * 禁用图文混排的自动保存草稿和修订版本
- * */
-
-//取消保存修订版本，这个是在defalut-filters中加了一个action，在保存文章之前，先保存修订版本
-remove_action("pre_post_update","wp_save_post_revision");
-//禁用自动保存草稿
-function zy_disable_autosave(){
-    wp_deregister_script("autosave");
-}
-add_action("wp_print_scripts","zy_disable_autosave");
-//删除数据库多余的记录
-function zy_delete_autodraft($post_id){
-    global $wpdb;
-    //在发布文章的时候删除掉除自己外的其他垃圾文章，除自己外是因为当没填写任何内容发布时，状态也是auto-draft
-    $wpdb->query("DELETE FROM $wpdb->posts WHERE post_status = 'auto-draft'");
-}
-
-add_action("publish_post","zy_delete_autodraft");
-
+include(get_template_directory()."/zy_pages/controller/class_zy_tinymce.php");
+$tinymce=new Zy_Tinymce();
 
 /*===========================================================文章锁定的控制==================================*/
-/*
- * 文章处于锁定阶段的判断
- * */
-function zy_check_lock($post_id){
-    global $wpdb;
-    $tablename=$wpdb->prefix."pack_ids";
-    $zy_pack=$wpdb->get_row("SELECT * FROM $tablename WHERE post_id=$post_id");
-    if($zy_pack->pack_time){
-        if(time()-$zy_pack->pack_time<1800&&$zy_pack->pack_lock==0){
-
-            //打包时间在30分钟内，并且还没有设置打包标志为1的需要锁定
-            header("content-type:text/html; charset=utf-8");
-            die("文章正在被打包，请稍后进行操作，<a href='javascript:history.back()'>返回</a>进行其他操作");
-        }
-    }
-
-    //如果提交的edit_lock和数据库中保存的不一样，那么要阻止提交
-    $current_edit_lock=get_post_meta($post_id,"_edit_lock",true);
-    $edit_lock=$_POST["_edit_lock"];
-    if($current_edit_lock!=$edit_lock&&$edit_lock){
-        header("content-type:text/html; charset=utf-8");
-        die("其他人以先于你提交更改，请重新编辑后再提交，<a href='".site_url()."/wp-admin/edit.php'>返回</a>");
-    }
-
-}
-add_action("pre_post_update","zy_check_lock");
-
-
 /*===================================================数据清理=====================================*/
-
-/**
- * 清除上传时产生的临时文件
- */
-function zy_delete_tmp(){
-    global $user_ID;
-    $currentTimeS=time();
-    $target_dir=wp_upload_dir();
-    $target_dir=$target_dir["basedir"]."/tmp/".$user_ID;
-    if(is_dir($target_dir)){
-        $fileTimeS=filemtime($target_dir);
-        if($currentTimeS-$fileTimeS>12*60*60){
-            zy_common_class::zy_deldir($target_dir);
-        }
-    }
-}
-add_action("admin_init","zy_delete_tmp");
-
-/*
- * 移入回收站的操作,通知打包程序删除文章
- * 不进行页面报错
- * */
-function zy_trash_post($post_id){
-
-    header("content-type:text/html; charset=utf-8");
-    //只有文章和幻灯片才发送请求去打包程序
-    if(get_post($post_id)->post_type=="post"){
-        //发送数据给打包程序，删除zip包
-        $url=get_site_url()."/bundle-app/removeBundle";
-        $zy_http_result=false;
-
-        for($i=0;$i<3;$i++){
-            if(zy_common_class::zy_http_send($post_id,$url)){
-                $zy_http_result=true;
-                break;//跳出循环
-            }
-        }
-
-        //设置数据库的值
-        global $wpdb;
-        if($zy_http_result){
-            if($wpdb->update($wpdb->prefix."pack_ids",array("pack_lock"=>0,"pack_time"=>NULL),array("post_id"=>$post_id),array("%d","%s"))===false){
-                die("重置打包数据库失败，请将文章id".$post_id."告诉开发人员！");
-            }
-        }else{
-            die("删除打包文件失败，请将文章id".$post_id."告诉开发人员！");
-        }
-    }
-}
-add_action('trashed_post','zy_trash_post');
-
-/*
- * 删除时的操作函数
- * */
-function zy_delete_post($post_id){
-    //设置页面编码
-    header("content-type:text/html; charset=utf-8");
-    global $wpdb;
-    if(get_post($post_id)->post_type=="zy_music"){
-
-        //如果是音乐类型
-        if(!zy_music_delete($post_id)){
-            die("删除音乐文件失败，请将音乐id".$post_id."告诉开发人员！");
-        }
-
-    }else if(get_post($post_id)->post_type=="post"){
-        //如果是文章或者幻灯片类型（post）
-        $targetDir=wp_upload_dir();
-
-
-        /*不管删除打包文件是否成功，都删除服务器的内容*/
-        //删除打包表中的数据
-        $sql_result=$wpdb->delete($wpdb->prefix."pack_ids",array("post_id"=>$post_id));
-        $delete_file_result=true;
-        if(is_dir($targetDir["basedir"]."/".$post_id)){
-
-            //这里删除可能不会成功，所以出错后应该手动删除文件夹
-            $delete_file_result=zy_common_class::zy_deldir($targetDir["basedir"]."/".$post_id);
-        }
-
-        //如果成功删除媒体文件夹
-        if(!$delete_file_result||$sql_result===false){
-            die("删除文件或者打包数据表记录失败，请将文章id".$post_id."告诉开发人员！");
-        }
-
-    }
-
-}
-add_action('deleted_post', 'zy_delete_post');
-//add_action('delete_post',"zy_delete_post");
-
-//删除之前判断文章是否在锁定期
-add_action("before_delete_post","zy_check_lock");
-
+/*=================================================添加右边栏输入项部分============================*/
+include(get_template_directory()."/zy_pages/controller/class_zy_post_helper.php");
+$post_helper=new Zy_Post_Helper();
 
 /*================================================修改时的跳转===========================================*/
-/*
- * 控制文章显示后的修改链接跳转。
- * */
-function zy_page_template_redirect(){
-    if(isset($_GET["post"])){
-        $post_id=$_GET["post"];
-        if(strpos(get_post($post_id)->post_mime_type,"zyslide")!==false){
-            wp_redirect(admin_url()."edit.php?page=zy_slide_menu&post_id=$post_id");
-            exit();
-        }
-    }
-    //echo $_SERVER["REQUEST_URI"];
-}
-//hook，在admin的初始化时admin_head,admin_init这两个每次页面都会检测，加重系统负担
-add_action( 'add_meta_boxes', 'zy_page_template_redirect' );
-
-
 /*==================================================添加重写规则，客户端播放视频的页面================*/
-function add_zy_rewrite(){
+include(get_template_directory()."/zy_pages/controller/class_zy_rewrite.php");
+$rewrite=new Zy_Rewrite();
 
-    //添加展示媒体文件的链接地址重写
-    add_rewrite_rule('show_media/(\d+)/(\w+)$','index.php?pagename=show_media&zy_post_id=$matches[1]&zy_media_id=$matches[2]','top');
-    //如果不加下面两句，wordpress无法识别到自定义的参数
-    add_rewrite_tag('%zy_post_id%','([^&]+)');
-    add_rewrite_tag('%zy_media_id%','([^&]+)');
-
-    //添加下载音乐的链接地址重写
-    add_rewrite_rule('download_music/(\d+)/(.+)$','index.php?pagename=download_music&music_id=$matches[1]','top');
-    add_rewrite_tag('%music_id%','([^&]+)');
-
-
-    //添加展示图片的链接地址重写
-    add_rewrite_rule('show_image/(.+)$','index.php?pagename=show_image&zy_image_url=$matches[1]','top');
-    add_rewrite_tag('%zy_image_url%','([^&]+)');
-}
-add_action("init","add_zy_rewrite");
 
 
 

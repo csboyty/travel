@@ -6,7 +6,6 @@
  * Time: 上午11:52
  * To change this template use File | Settings | File Templates.
  */
-//include ("class_zy_util.php");
 class Zy_Menu {
     public function add_all_menu(){
         //添加文章子菜单“幻灯片”

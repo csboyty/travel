@@ -12,15 +12,35 @@ class Zy_Ajax {
     const ZY_TOP_POST_COUNT=4;
     const ZY_TOP_TERM_ID=11; //本地为8
 
+    public function __construct() {
+        add_action('wp_ajax_uploadfile', array($this,'zy_action_uploadfile'));
+        //火狐里面这个地方不会带登陆标志过来，需要加下面这句或者前台上传插件使用html5引擎
+        //add_action('wp_ajax_nopriv_uploadfile', array($this,'zy_action_uploadfile'));
+
+        add_action("wp_ajax_nopriv_zy_pack_unlock",array($this,"zy_pack_unlock_callback"));
+        add_action("wp_ajax_zy_pack_unlock",array($this,"zy_pack_unlock_callback"));
+
+        add_action("wp_ajax_zy_get_music",array($this,"zy_get_music"));
+        add_action("wp_ajax_nopriv_zy_get_music",array($this,"zy_get_music"));
+
+        add_action("wp_ajax_zy_get_posts",array($this,"zy_get_posts"));
+        add_action("wp_ajax_nopriv_zy_get_posts",array($this,"zy_get_posts"));
+
+        add_action("wp_ajax_zy_get_top_posts",array($this,"zy_get_top_posts"));
+        add_action("wp_ajax_nopriv_zy_get_top_posts",array($this,"zy_get_top_posts"));
+
+        add_action("wp_ajax_zy_get_categories",array($this,"zy_get_categories"));
+        add_action("wp_ajax_nopriv_zy_get_categories",array($this,"zy_get_categories"));
+
+        add_action("wp_ajax_zy_get_post_detail",array($this,"zy_get_post_detail"));
+        add_action("wp_ajax_nopriv_zy_get_post_detail",array($this,"zy_get_post_detail"));
+    }
     /*
      *ajax 上传文件函数
      */
     public function zy_action_uploadfile(){
 
-        //最先判断是否登录
-
-
-        $image=new zy_image_class();
+        $image=new Zy_Image();
 
         $dir=wp_upload_dir();
 

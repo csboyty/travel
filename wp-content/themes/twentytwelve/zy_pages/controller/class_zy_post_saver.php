@@ -10,7 +10,11 @@
 class Zy_Post_Saver {
     private $dir,$target_dir,$from_dir;
 
-    const ZY_COMPRESS_SUFFIX="_zy_compress"; //常量，代表压缩文件的后缀
+    const COMPRESS_SUFFIX="_zy_compress"; //常量，代表压缩文件的后缀
+
+    public function __construct(){
+        add_action('publish_post', array($this,'data_save'));
+    }
 
     /**
      * 移动媒体文件
@@ -28,7 +32,7 @@ class Zy_Post_Saver {
     }
      * @return bool true|false 保存是否成功
      */
-    public function zy_move_media_files($from_dir,$target_dir,$value){
+    public function move_media_files($from_dir,$target_dir,$value){
 
         //获取文件相关信息
         $filename=$value["zy_media_filename"];
@@ -73,7 +77,7 @@ class Zy_Post_Saver {
             $pathinfo["filename"]=substr($thumb_filename, 0,strrpos($thumb_filename, '.'));
 
 
-            $zy_compress=$pathinfo["filename"].self::ZY_COMPRESS_SUFFIX.".".$pathinfo["extension"];
+            $zy_compress=$pathinfo["filename"].self::COMPRESS_SUFFIX.".".$pathinfo["extension"];
             if(is_file($from_dir."/".$zy_compress)){
                 if(!rename($from_dir."/".$zy_compress,$target_dir."/".$zy_compress)){
                     return false;
@@ -90,7 +94,7 @@ class Zy_Post_Saver {
      * @param int $post_id 文章或者幻灯片id
      * @return bool true|false 创建是否成功
      */
-    public function zy_get_targetdir($post_id){
+    public function get_targetdir($post_id){
         global $user_ID;
         $this->dir=wp_upload_dir();
         $this->from_dir=$this->dir["basedir"]."/tmp/".$user_ID;
@@ -114,11 +118,11 @@ class Zy_Post_Saver {
      * @param string $new_medias 媒体文件数据json字符串
      * @return bool true|false 保存是否成功
      */
-    public function zy_new_save_medias($post_id,$new_medias){
+    public function new_save_medias($post_id,$new_medias){
         global $user_ID;
 
         //获取和创建目录
-        if(!$this->zy_get_targetdir($post_id)){
+        if(!$this->get_targetdir($post_id)){
             return false;
         }
 
@@ -132,12 +136,12 @@ class Zy_Post_Saver {
             foreach($new_medias_array as $key=>$value){
 
                 //移动文件
-                if(!$this->zy_move_media_files($this->from_dir,$this->target_dir,$value)){
+                if(!$this->move_media_files($this->from_dir,$this->target_dir,$value)){
                     return false;
                 }
 
                 //替换路径中tmp,json_decode函数遇到中文的时候会转成unicode编码，在写入数据库之前要设置成utf8
-                $json_string=zy_common_class::zy_array_to_string($value);
+                $json_string=Zy_Util::array_to_string($value);
                 $json_string=str_replace("tmp/$user_ID",$post_id,$json_string);
 
                 if(!update_post_meta($post_id,$key,$json_string)){
@@ -154,11 +158,11 @@ class Zy_Post_Saver {
      * @param string $new_medias 所有上传的媒体文件的json字符串
      * @return bool true|false 保存是否成功
      */
-    public function zy_edit_save_medias($post_id,$new_medias){
+    public function edit_save_medias($post_id,$new_medias){
         global $user_ID;
 
         //获取和创建目录
-        if(!$this->zy_get_targetdir($post_id)){
+        if(!$this->get_targetdir($post_id)){
             return false;
         }
 
@@ -203,12 +207,12 @@ class Zy_Post_Saver {
 
                         //改动过值，需要取文件，并且更新数据库
                         if(count($diffrent)){
-                            if(!$this->zy_move_media_files($this->from_dir,$this->target_dir,$value)){
+                            if(!$this->move_media_files($this->from_dir,$this->target_dir,$value)){
                                 return false;
                             }
 
                             //更新数据库记录
-                            $json_string=zy_common_class::zy_array_to_string($value);
+                            $json_string=Zy_Util::array_to_string($value);
                             $json_string=str_replace("tmp/$user_ID",$post_id,$json_string);
 
                             if(!update_post_meta($post_id,$key,$json_string)){
@@ -217,19 +221,19 @@ class Zy_Post_Saver {
                         }else{
 
                             //没有改动过值，不需要更新数据库，只需要取同名文件
-                            if(!$this->zy_move_media_files($this->from_dir,$this->target_dir,$value)){
+                            if(!$this->move_media_files($this->from_dir,$this->target_dir,$value)){
                                 return false;
                             }
                         }
                     }else{
 
                         //不存在的话，代表是新增的，需要插入数据库记录，并且移动文件
-                        if(!$this->zy_move_media_files($this->from_dir,$this->target_dir,$value)){
+                        if(!$this->move_media_files($this->from_dir,$this->target_dir,$value)){
                             return false;
                         }
 
                         //更新数据库记录
-                        $json_string=zy_common_class::zy_array_to_string($value);
+                        $json_string=Zy_Util::array_to_string($value);
                         $json_string=str_replace("tmp/$user_ID",$post_id,$json_string);
 
                         if(!update_post_meta($post_id,$key,$json_string)){
@@ -256,7 +260,7 @@ class Zy_Post_Saver {
 
                                 //删除解压的文件夹
                                 $zipdir=substr($filename, 0, strrpos($filename, "."));
-                                if(!zy_common_class::zy_deldir($this->target_dir."/".$zipdir)){
+                                if(!Zy_Util::deldir($this->target_dir."/".$zipdir)){
                                     return false;
                                 }
 
@@ -285,7 +289,7 @@ class Zy_Post_Saver {
                             //删除系统自动压缩的媒体图片（图片本身、媒体文件缩略图)
                             $thumb_path=pathinfo($thumb_name);
                             $thumb_path["filename"]=substr($thumb_name, 0,strrpos($thumb_name, '.'));
-                            $zy_compress=$thumb_path["filename"].self::ZY_COMPRESS_SUFFIX.".".$thumb_path["extension"];
+                            $zy_compress=$thumb_path["filename"].self::COMPRESS_SUFFIX.".".$thumb_path["extension"];
                             if(is_file($this->target_dir."/".$zy_compress)){
                                 if(!unlink($this->target_dir."/".$zy_compress)){
                                     return false;
@@ -305,12 +309,12 @@ class Zy_Post_Saver {
                     if(count($diffrent)){
 
                         //改动过值，需要取文件，并且更新数据库
-                        if(!$this->zy_move_media_files($this->from_dir,$this->target_dir,$value)){
+                        if(!$this->move_media_files($this->from_dir,$this->target_dir,$value)){
                             return false;
                         }
 
                         //更新数据库记录
-                        $json_string=zy_common_class::zy_array_to_string($value);
+                        $json_string=Zy_Util::array_to_string($value);
                         $json_string=str_replace("tmp/$user_ID",$post_id,$json_string);
 
                         if(!update_post_meta($post_id,$key,$json_string)){
@@ -319,7 +323,7 @@ class Zy_Post_Saver {
                     }else{
 
                         //没有改动过值，不需要更新数据库，只需要取同名文件
-                        if(!$this->zy_move_media_files($this->from_dir,$this->target_dir,$value)){
+                        if(!$this->move_media_files($this->from_dir,$this->target_dir,$value)){
                             return false;
                         }
                     }
@@ -343,7 +347,7 @@ class Zy_Post_Saver {
 
                         //删除解压的文件夹
                         $zipdir=substr($filename, 0, strrpos($filename, "."));
-                        if(!zy_common_class::zy_deldir($this->target_dir."/".$zipdir)){
+                        if(!Zy_Util::deldir($this->target_dir."/".$zipdir)){
                             return false;
                         }
                     }
@@ -371,7 +375,7 @@ class Zy_Post_Saver {
                     //删除系统自动压缩的媒体图片（图片本身、媒体文件缩略图)
                     $thumb_path=pathinfo($thumb_name);
                     $thumb_path["filename"]=substr($thumb_name, 0,strrpos($thumb_name, '.'));
-                    $zy_compress=$thumb_path["filename"].self::ZY_COMPRESS_SUFFIX.".".$thumb_path["extension"];
+                    $zy_compress=$thumb_path["filename"].self::COMPRESS_SUFFIX.".".$thumb_path["extension"];
                     if(is_file($this->target_dir."/".$zy_compress)){
                         if(!unlink($this->target_dir."/".$zy_compress)){
                             return false;
@@ -392,10 +396,10 @@ class Zy_Post_Saver {
      * @param string $filename 缩略图文件名
      * @return bool true|false 保存是否成功
      */
-    public function zy_new_save_thumb($post_id,$filename){
+    public function new_save_thumb($post_id,$filename){
 
         //获取和创建目录
-        if(!$this->zy_get_targetdir($post_id)){
+        if(!$this->get_targetdir($post_id)){
             return false;
         }
 
@@ -410,7 +414,7 @@ class Zy_Post_Saver {
         //获取系统压缩的缩略图的压缩图路径
         $pathinfo=pathinfo($filename);
         $pathinfo["filename"]=substr($filename, 0,strrpos($filename, '.'));
-        $zy_thumb=$pathinfo["filename"].self::ZY_COMPRESS_SUFFIX.".".$pathinfo["extension"];
+        $zy_thumb=$pathinfo["filename"].self::COMPRESS_SUFFIX.".".$pathinfo["extension"];
 
         if(is_file($this->from_dir."/".$zy_thumb)){
             if(!rename($this->from_dir."/".$zy_thumb,$this->target_dir."/".$zy_thumb)){
@@ -434,10 +438,10 @@ class Zy_Post_Saver {
      * @param string $old_filename 旧缩略图文件名
      * @return bool true|false 保存是否成功
      */
-    public function zy_edit_save_thumb($post_id,$filename,$old_filename){
+    public function edit_save_thumb($post_id,$filename,$old_filename){
 
         //获取和创建目录
-        if(!$this->zy_get_targetdir($post_id)){
+        if(!$this->get_targetdir($post_id)){
             return false;
         }
 
@@ -454,7 +458,7 @@ class Zy_Post_Saver {
             //获取系统压缩的缩略图的压缩图路径
             $pathinfo_old=pathinfo($old_filename);
             $pathinfo_old["filename"]=substr($old_filename, 0,strrpos($old_filename, '.'));
-            $zy_compress_old=$pathinfo_old["filename"].self::ZY_COMPRESS_SUFFIX.".".$pathinfo_old["extension"];
+            $zy_compress_old=$pathinfo_old["filename"].self::COMPRESS_SUFFIX.".".$pathinfo_old["extension"];
 
             if(is_file($this->target_dir."/".$zy_compress_old)){
                 if(!unlink($this->target_dir."/".$zy_compress_old)){
@@ -473,7 +477,7 @@ class Zy_Post_Saver {
             //获取系统压缩的缩略图的压缩图路径
             $pathinfo=pathinfo($filename);
             $pathinfo["filename"]=substr($filename, 0,strrpos($filename, '.'));
-            $zy_compress=$pathinfo["filename"].self::ZY_COMPRESS_SUFFIX.".".$pathinfo["extension"];
+            $zy_compress=$pathinfo["filename"].self::COMPRESS_SUFFIX.".".$pathinfo["extension"];
 
             if(is_file($this->from_dir."/".$zy_compress)){
                 if(!rename($this->from_dir."/".$zy_compress,$this->target_dir."/".$zy_compress)){
@@ -498,7 +502,7 @@ class Zy_Post_Saver {
             //获取系统压缩的缩略图的压缩图路径
             $pathinfo=pathinfo($filename);
             $pathinfo["filename"]=substr($filename, 0,strrpos($filename, '.'));
-            $zy_compress=$pathinfo["filename"].self::ZY_COMPRESS_SUFFIX.".".$pathinfo["extension"];
+            $zy_compress=$pathinfo["filename"].self::COMPRESS_SUFFIX.".".$pathinfo["extension"];
 
             if(is_file($this->from_dir."/".$zy_compress)){
                 if(!rename($this->from_dir."/".$zy_compress,$this->target_dir."/".$zy_compress)){
@@ -516,13 +520,13 @@ class Zy_Post_Saver {
      * @param string $filename 背景文件名
      * @return bool true|false 保存是否成功
      */
-    public function zy_new_save_background($post_id,$filename){
+    public function new_save_background($post_id,$filename){
         if(!empty($filename)){
             $pathinfo=pathinfo($filename);
             $filetype =$pathinfo["extension"];//获取后缀
 
             //获取和创建目录
-            if(!$this->zy_get_targetdir($post_id)){
+            if(!$this->get_targetdir($post_id)){
                 return false;
             }
 
@@ -549,7 +553,7 @@ class Zy_Post_Saver {
      * @param string $old_filename 旧背景文件名
      * @return bool true|false 保存是否成功
      */
-    public function zy_edit_save_background($post_id,$filename,$old_filename){
+    public function edit_save_background($post_id,$filename,$old_filename){
 
         //如果新传的不为空则是修改，如果为空则是直接删除了背景图
         if(!empty($filename)){
@@ -557,7 +561,7 @@ class Zy_Post_Saver {
             $filetype =$pathinfo["extension"];//获取后缀
 
             //获取和创建目录
-            if(!$this->zy_get_targetdir($post_id)){
+            if(!$this->get_targetdir($post_id)){
                 return false;
             }
 
@@ -615,5 +619,120 @@ class Zy_Post_Saver {
         }
 
         return true;
+    }
+
+    public function save_medias($post_id){
+
+        $new_medias=$_POST["zy_medias"];
+
+        if(isset($_POST["zy_old_medias"])){
+            //判断是否为修改
+            if(!$this->edit_save_medias($post_id,$new_medias)){
+                return false;
+            }
+        }else{
+            //判断为新增
+            if(!$this->new_save_medias($post_id,$new_medias)){
+                return false;
+            }
+        }
+        //返回值
+        return true;
+    }
+    /*
+     * 存储缩略图数据函数
+     * */
+    function save_thumb($post_id){
+        $filename=$_POST["zy_thumb"];
+
+        //分为新建和修改两种类型
+        if(isset($_POST["zy_old_thumb"])){
+            $old_filename=$_POST["zy_old_thumb"];
+            //如果是修改了文件
+            if(!$this->edit_save_thumb($post_id,$filename,$old_filename)){
+                return false;
+            }
+        }else{
+            if(!$this->new_save_thumb($post_id,$filename)){
+                return false;
+            }
+        }
+
+        //返回值,让
+        return true;
+    }
+    /*
+     * 存储背景图数据函数
+     * */
+    function save_background($post_id){
+        $filename=$_POST["zy_background"];
+
+        //分为新建和修改两种类型
+        if(isset($_POST["zy_old_background"])){
+            $old_filename=$_POST["zy_old_background"];
+            //如果是修改了文件
+            if(!$this->edit_save_background($post_id,$filename,$old_filename)){
+                return false;
+            }
+        }else{
+            if(!$this->new_save_background($post_id,$filename)){
+                return false;
+            }
+        }
+
+        //返回值,让
+        return true;
+    }
+
+    /*
+     * 保存自定义数据,所有的数据在一个函数保存
+     * */
+    function zy_data_save( $post_id ) {
+        global $wpdb;
+        $post=get_post($post_id);
+
+        /*
+         * 需要判断是图文混排还是幻灯片，因为幻灯片的wp_insert_post也会出发publish_post
+         * */
+        if(strpos($post->post_mime_type,"zyslide")===false&&isset($_POST["zy_thumb"])){
+
+            //设置页面编码
+            header("content-type:text/html;charset=utf-8");
+
+            /*存储媒体文件数据*/
+            if(!$this->save_medias($post_id)){
+                //提示错误
+                die("保存媒体数据出错，请联系开发人员");
+            }
+
+            /*存储缩略图数据*/
+            if(!$this->save_thumb($post_id)){
+                //提示错误
+                die("保存缩略图数据出错，请联系开发人员");
+            }
+            /*存储背景数据*/
+            if(!$this->save_background($post_id)){
+                //提示错误
+                die("保存背景数据出错，请联系开发人员");
+            }
+
+            //保存打包数据
+            $tablename=$wpdb->prefix."pack_ids";
+            if(count($wpdb->get_col("SELECT post_id FROM $tablename WHERE post_id=$post_id"))){
+                //存在的情况下，修改
+                if($wpdb->update($wpdb->prefix."pack_ids",array("pack_lock"=>0,"pack_time"=>NULL),array("post_id"=>$post_id),array("%d","%s"))===false){
+                    die("保存打包数据出错，请联系开发人员");
+                }
+            }else{
+                //不存在的情况下新增
+                if(!$wpdb->insert($wpdb->prefix."pack_ids",array("post_id"=>$post_id),array("%d"))){
+                    die("保存打包数据出错，请联系开发人员");
+                }
+            }
+
+            //更新发布时间
+            $post_date=current_time('mysql');
+            $wpdb->update($wpdb->posts, array("post_date"=>$post_date,"post_date_gmt"=>date("Y-m-d H:i:s")), array("ID"=>$post_id));
+        }
     }
 }

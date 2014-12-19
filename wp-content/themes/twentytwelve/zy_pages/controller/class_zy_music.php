@@ -15,6 +15,7 @@ class Zy_Music
     public function __construct() {
         add_action("init",array($this,"music_init"));
         add_action("publish_zy_music",array($this,"music_save"));
+        add_action('deleted_post', array($this,"music_delete"));
         add_filter( 'post_updated_messages', array($this,"music_updated_messages"));
     }
     /**
@@ -116,13 +117,15 @@ class Zy_Music
      * @return bool true|false 删除是否成功
      */
     public function music_delete($post_id){
-        $targetDir=wp_upload_dir();
-        if(!Zy_Util::deldir($targetDir["basedir"]."/".$post_id)){
-            header("content-type:text/html; charset=utf-8");
-            die("删除音乐文件失败，请将音乐id".$post_id."告诉开发人员！");
-        }
+        if(get_post($post_id)->post_type=="zy_music"){
+            $targetDir=wp_upload_dir();
+            if(!Zy_Util::deldir($targetDir["basedir"]."/".$post_id)){
+                header("content-type:text/html; charset=utf-8");
+                die("删除音乐文件失败，请将音乐id".$post_id."告诉开发人员！");
+            }
 
-        return true;
+            return true;
+        }
     }
 
     /**

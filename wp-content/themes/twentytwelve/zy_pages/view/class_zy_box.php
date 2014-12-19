@@ -6,25 +6,23 @@
  * Time: 上午8:56
  * To change this template use File | Settings | File Templates.
  */
-include(get_template_directory()."/zy_pages/controller/class_zy_page_helper.php");
-class Zy_Box {
 
-    const ZY_COMPRESS_SUFFIX="_zy_compress";
+class Zy_Box {
 
     /**
      * 增加缩略图页面,如果action里面直接用的类名而不是对象，这里面就不能使用$this
      * 就无需继承,此处还刷出了所有上传的媒体文件
      * @param object $post 文章对象
      */
-    public function zy_post_thumb_box($post){
+    public function post_thumb_box($post){
 
-        $zy_help=new zy_articles_help_class();
+        $post_helper=new Zy_Post_Helper();
 
         //获取原来的缩略图
-        $zy_old_thumb=$zy_help->zy_get_old_thumb($post->ID);
+        $zy_old_thumb=$post_helper->get_old_thumb($post->ID);
 
         //获取已经上传的媒体文件
-        $zy_help->zy_get_post_medias($post->ID);
+        $post_helper->get_post_medias($post->ID);
 
         $edit_time=get_post_meta($post->ID,"_edit_lock",true);
 
@@ -50,7 +48,7 @@ class Zy_Box {
 
                 //显示压缩后的图片
 
-                $zy_help->zy_get_compress_thumb($zy_old_thumb["filepath"]);
+                $post_helper->get_compress_thumb($zy_old_thumb["filepath"]);
 
             }else{
 
@@ -71,9 +69,9 @@ class Zy_Box {
      * 增加背景图
      * @param object $post 文章对象
      */
-    public function zy_post_background_box($post){
+    public function post_background_box($post){
 
-        $zy_help=new zy_articles_help_class();
+        $post_helper=new Zy_Post_Helper();
 
 
         ?>
@@ -92,7 +90,7 @@ class Zy_Box {
 
             <?php
             //获取原来的背景
-            $zy_help->zy_get_old_background($post->ID);
+            $post_helper->get_old_background($post->ID);
 
             ?>
 
